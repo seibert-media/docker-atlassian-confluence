@@ -18,4 +18,11 @@ RUN set -x \
 
 ADD files/entrypoint /usr/local/bin/entrypoint
 
+RUN set -x \
+  && chown -R daemon:daemon /usr/local/bin/entrypoint \
+  && chown -R daemon:daemon /opt/atlassian/confluence \
+  && chown -R daemon:daemon /var/opt/atlassian/application-data/confluence
+
+USER daemon
+
 ENTRYPOINT  ["/usr/local/bin/entrypoint"]
