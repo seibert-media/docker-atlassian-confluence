@@ -15,3 +15,7 @@ RUN set -x \
 RUN set -x \
   && mkdir -p /opt/atlassian/confluence \
   && mkdir -p /var/opt/atlassian/application-data/confluence
+
+ADD files/entrypoint /usr/local/bin/entrypoint
+
+ENTRYPOINT  ["/usr/local/bin/entrypoint"]
