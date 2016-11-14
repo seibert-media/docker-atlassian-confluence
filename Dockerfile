@@ -17,12 +17,28 @@ RUN set -x \
   && mkdir -p /opt/atlassian/confluence \
   && mkdir -p /var/opt/atlassian/application-data/confluence
 
+ADD https://www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-$VERSION.tar.gz /tmp
+
+RUN set -x \
+  && tar xvfz /tmp/atlassian-confluence-$VERSION.tar.gz --strip-components=1 -C /opt/atlassian/confluence \
+  && rm /tmp/atlassian-confluence-$VERSION.tar.gz
+
+RUN set -x \
+  && sed --in-place 's/# confluence.home=c:\/confluence\/data/confluence.home=\/var\/opt\/atlassian\/application-data\/confluence/' /opt/atlassian/confluence/confluence/WEB-INF/classes/confluence-init.properties
+
+RUN set -x \
+  && touch -d "@0" "/opt/atlassian/confluence/conf/server.xml" \
+  && touch -d "@0" "/opt/atlassian/confluence/bin/setenv.sh"
+
 ADD files/entrypoint /usr/local/bin/entrypoint
 
 RUN set -x \
   && chown -R daemon:daemon /usr/local/bin/entrypoint \
   && chown -R daemon:daemon /opt/atlassian/confluence \
   && chown -R daemon:daemon /var/opt/atlassian/application-data/confluence
+
+EXPOSE 8090
+EXPOSE 8091
 
 USER daemon
 
