@@ -43,4 +43,6 @@ EXPOSE 8091
 
 USER daemon
 
+VOLUME $CONFLUENCE_HOME
+
 ENTRYPOINT  ["/usr/local/bin/entrypoint"]
