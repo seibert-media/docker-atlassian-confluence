@@ -40,13 +40,12 @@ RUN set -x \
   && chown -R daemon:daemon $CONFLUENCE_INST \
   && chown -R daemon:daemon $CONFLUENCE_HOME
 
-EXPOSE 8090
-EXPOSE 8091
+EXPOSE 8090 8091
 
 USER daemon
 
 VOLUME $CONFLUENCE_HOME
 
-ENTRYPOINT  ["/usr/local/bin/entrypoint"]
+ENTRYPOINT ["/usr/local/bin/entrypoint"]
 
 CMD ["/usr/local/bin/service"]
