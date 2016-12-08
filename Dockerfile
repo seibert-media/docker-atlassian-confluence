@@ -31,9 +31,11 @@ RUN set -x \
   && touch -d "@0" "$CONFLUENCE_INST/bin/setenv.sh" \
   && touch -d "@0" "$CONFLUENCE_INST/confluence/WEB-INF/classes/confluence-init.properties"
 
+ADD files/service /usr/local/bin/service
 ADD files/entrypoint /usr/local/bin/entrypoint
 
 RUN set -x \
+  && chown -R daemon:daemon /usr/local/bin/service \
   && chown -R daemon:daemon /usr/local/bin/entrypoint \
   && chown -R daemon:daemon $CONFLUENCE_INST \
   && chown -R daemon:daemon $CONFLUENCE_HOME
@@ -46,3 +48,5 @@ USER daemon
 VOLUME $CONFLUENCE_HOME
 
 ENTRYPOINT  ["/usr/local/bin/entrypoint"]
+
+CMD ["/usr/local/bin/service"]

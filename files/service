@@ -1,0 +1,3 @@
+#!/bin/bash
+
+${CONFLUENCE_INST}/bin/start-confluence.sh -fg
