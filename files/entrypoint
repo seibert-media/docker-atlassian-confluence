@@ -31,6 +31,4 @@ if [ "$(stat -c "%Y" "${CONFLUENCE_INST}/bin/setenv.sh")" -eq "0" ]; then
   fi
 fi
 
-nohup ${CONFLUENCE_INST}/bin/start-confluence.sh >/dev/null 2>&1 &
-
-/bin/bash
+exec "$@"
