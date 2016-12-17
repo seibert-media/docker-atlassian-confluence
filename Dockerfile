@@ -11,6 +11,9 @@ ARG VERSION
 
 ENV CONFLUENCE_INST /opt/atlassian/confluence
 ENV CONFLUENCE_HOME /var/opt/atlassian/application-data/confluence
+ENV SYSTEM_USER confluence
+ENV SYSTEM_GROUP confluence
+ENV SYSTEM_HOME /home/confluence
 
 RUN set -x \
   && apk add git tar xmlstarlet --update-cache --allow-untrusted --repository http://dl-cdn.alpinelinux.org/alpine/edge/main --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
@@ -19,6 +22,12 @@ RUN set -x \
 RUN set -x \
   && mkdir -p $CONFLUENCE_INST \
   && mkdir -p $CONFLUENCE_HOME
+
+RUN set -x \
+  && mkdir -p /home/$SYSTEM_USER \
+  && addgroup -S $SYSTEM_GROUP \
+  && adduser -S -D -G $SYSTEM_GROUP -h $SYSTEM_GROUP -s /bin/sh $SYSTEM_USER \
+  && chown -R $SYSTEM_USER:$SYSTEM_GROUP /home/$SYSTEM_USER
 
 ADD https://www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-$VERSION.tar.gz /tmp
 
@@ -35,14 +44,14 @@ ADD files/service /usr/local/bin/service
 ADD files/entrypoint /usr/local/bin/entrypoint
 
 RUN set -x \
-  && chown -R daemon:daemon /usr/local/bin/service \
-  && chown -R daemon:daemon /usr/local/bin/entrypoint \
-  && chown -R daemon:daemon $CONFLUENCE_INST \
-  && chown -R daemon:daemon $CONFLUENCE_HOME
+  && chown -R $SYSTEM_USER:$SYSTEM_GROUP /usr/local/bin/service \
+  && chown -R $SYSTEM_USER:$SYSTEM_GROUP /usr/local/bin/entrypoint \
+  && chown -R $SYSTEM_USER:$SYSTEM_GROUP $CONFLUENCE_INST \
+  && chown -R $SYSTEM_USER:$SYSTEM_GROUP $CONFLUENCE_HOME
 
 EXPOSE 8090 8091
 
-USER daemon
+USER $SYSTEM_USER
 
 VOLUME $CONFLUENCE_HOME
 
