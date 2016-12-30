@@ -17,7 +17,7 @@ ENV SYSTEM_GROUP confluence
 ENV SYSTEM_HOME /home/confluence
 
 RUN set -x \
-  && apk add git tar xmlstarlet --update-cache --allow-untrusted --repository http://dl-cdn.alpinelinux.org/alpine/edge/main --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
+  && apk add git tar xmlstarlet wget ca-certificates --update-cache --allow-untrusted --repository http://dl-cdn.alpinelinux.org/alpine/edge/main --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
   && rm -rf /var/cache/apk/*
 
 RUN set -x \
@@ -30,14 +30,13 @@ RUN set -x \
   && adduser -S -D -G $SYSTEM_GROUP -h $SYSTEM_GROUP -s /bin/sh $SYSTEM_USER \
   && chown -R $SYSTEM_USER:$SYSTEM_GROUP /home/$SYSTEM_USER
 
-ADD https://www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-$VERSION.tar.gz /tmp
-ADD https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-$MYSQL_JDBC_VERSION.tar.gz /tmp
-
 RUN set -x \
+  && wget -O /tmp/atlassian-confluence-$VERSION.tar.gz https://www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-$VERSION.tar.gz \
   && tar xfz /tmp/atlassian-confluence-$VERSION.tar.gz --strip-components=1 -C $CONFLUENCE_INST \
   && rm /tmp/atlassian-confluence-$VERSION.tar.gz
 
 RUN set -x \
+  && wget -O /tmp/mysql-connector-java-$MYSQL_JDBC_VERSION.tar.gz https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-$MYSQL_JDBC_VERSION.tar.gz \
   && tar xfz /tmp/mysql-connector-java-$MYSQL_JDBC_VERSION.tar.gz mysql-connector-java-$MYSQL_JDBC_VERSION/mysql-connector-java-$MYSQL_JDBC_VERSION-bin.jar -C $CONFLUENCE_INST/confluence/WEB-INF/lib/ \
   && rm /tmp/mysql-connector-java-$MYSQL_JDBC_VERSION.tar.gz
 
