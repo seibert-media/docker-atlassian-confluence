@@ -33,7 +33,9 @@ RUN set -x \
 RUN set -x \
   && wget -nv -O /tmp/atlassian-confluence-${VERSION}.tar.gz https://www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-${VERSION}.tar.gz \
   && tar xfz /tmp/atlassian-confluence-${VERSION}.tar.gz --strip-components=1 -C ${CONFLUENCE_INST} \
-  && rm /tmp/atlassian-confluence-${VERSION}.tar.gz
+  && rm /tmp/atlassian-confluence-${VERSION}.tar.gz \
+  && chown -R ${SYSTEM_USER}:${SYSTEM_GROUP} ${CONFLUENCE_INST} \
+  && chown -R ${SYSTEM_USER}:${SYSTEM_GROUP} ${CONFLUENCE_HOME}
 
 RUN set -x \
   && wget -nv -O /tmp/mysql-connector-java-${MYSQL_JDBC_VERSION}.tar.gz https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQL_JDBC_VERSION}.tar.gz \
@@ -50,9 +52,7 @@ ADD files/entrypoint /usr/local/bin/entrypoint
 
 RUN set -x \
   && chown -R ${SYSTEM_USER}:${SYSTEM_GROUP} /usr/local/bin/service \
-  && chown -R ${SYSTEM_USER}:${SYSTEM_GROUP} /usr/local/bin/entrypoint \
-  && chown -R ${SYSTEM_USER}:${SYSTEM_GROUP} ${CONFLUENCE_INST} \
-  && chown -R ${SYSTEM_USER}:${SYSTEM_GROUP} ${CONFLUENCE_HOME}
+  && chown -R ${SYSTEM_USER}:${SYSTEM_GROUP} /usr/local/bin/entrypoint
 
 EXPOSE 8090 8091
 
