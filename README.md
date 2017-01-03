@@ -8,6 +8,7 @@ This is a Docker-Image for Atlassian Confluence based on [Alpine Linux](http://a
 * Setting application context path
 * Setting JVM xms and xmx values
 * Setting proxy parameters in server.xml to run it behind a reverse proxy (TOMCAT_PROXY_* ENV)
+* Includes MySQL JDBC driver
 
 ## Variables
 
@@ -22,11 +23,11 @@ This is a Docker-Image for Atlassian Confluence based on [Alpine Linux](http://a
 * 8090
 * 8091
 
-## Build conatiner
+## Build container
 Specify the application version in the build command:
 
 ```bash
-docker build --build-arg VERSION=x.x.x .                                                        
+docker build --build-arg VERSION=x.x.x --build-arg MYSQL_JDBC_VERSION=5.1.40 .                                                        
 ```
 
 ## Getting started
