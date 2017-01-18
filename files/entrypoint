@@ -1,10 +1,12 @@
 #!/bin/bash
 
 if [ "$(stat -c "%Y" "${CONFLUENCE_INST}/confluence/WEB-INF/classes/confluence-init.properties")" -eq "0" ]; then
-  sed --in-place "s~# confluence.home=c:\/confluence\/data~confluence.home=$CONFLUENCE_HOME~" ${CONFLUENCE_INST}/confluence/WEB-INF/classes/confluence-init.properties
+  sed --in-place "s~# confluence.home=c:\/confluence\/data~confluence.home=$CONFLUENCE_HOME~" "${CONFLUENCE_INST}/confluence/WEB-INF/classes/confluence-init.properties"
 fi
 
 if [ "$(stat -c "%Y" "${CONFLUENCE_INST}/conf/server.xml")" -eq "0" ]; then
+  xmlstarlet ed --inplace -s '//Service[@name="Tomcat-Standalone"]' -t "elem" -n 'Connector port="8009" URIEncoding="UTF-8" enableLookups="false" protocol="AJP/1.3"' "${CONFLUENCE_INST}/conf/server.xml"
+
   if [ -n "${TOMCAT_PROXY_NAME}" ]; then
     xmlstarlet ed --inplace --insert '//Connector[@port="8090"]' --type "attr" --name "proxyName" --value "${TOMCAT_PROXY_NAME}" "${CONFLUENCE_INST}/conf/server.xml"
   fi
@@ -30,5 +32,25 @@ if [ "$(stat -c "%Y" "${CONFLUENCE_INST}/bin/setenv.sh")" -eq "0" ]; then
     sed --in-place "s/-Xmx[0-9]\{4\}m/-Xmx${JVM_MEMORY_MAX}/" ${CONFLUENCE_INST}/bin/setenv.sh
   fi
 fi
+
+if [ "${CROWD_SSO}" -eq "1" ]; then
+  xmlstarlet ed --inplace -u '//authenticator/@class' -v "com.atlassian.confluence.user.ConfluenceCrowdSSOAuthenticator" "${CONFLUENCE_INST}/confluence/WEB-INF/classes/seraph-config.xml"
+else
+  xmlstarlet ed --inplace -u '//authenticator/@class' -v "com.atlassian.confluence.user.ConfluenceAuthenticator" "${CONFLUENCE_INST}/confluence/WEB-INF/classes/seraph-config.xml"
+fi
+
+cat <<EOF > "${CONFLUENCE_INST}/confluence/WEB-INF/classes/crowd.properties"
+application.name                        ${CROWD_APP_NAME:-'username'}
+application.password                    ${CROWD_APP_PASSWORD:-'password'}
+application.login.url                   ${CROWD_APP_LOGIN_URL:-'http://localhost:8095/crowd/console/'}
+
+crowd.server.url                        ${CROWD_SERVER_URL:-'http://localhost:8095/crowd/services/'}
+crowd.base.url                          ${CROWD_BASE_URL:-'http://localhost:8095/crowd/'}
+
+session.isauthenticated                 session.isauthenticated
+session.tokenkey                        session.tokenkey
+session.validationinterval              ${CROWD_VALIDATIONINTERVAL:-'2'}
+session.lastvalidation                  session.lastvalidation
+EOF
 
 exec "$@"
