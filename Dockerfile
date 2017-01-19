@@ -55,7 +55,7 @@ RUN set -x \
   && chown -R ${SYSTEM_USER}:${SYSTEM_GROUP} /usr/local/bin/service \
   && chown -R ${SYSTEM_USER}:${SYSTEM_GROUP} /usr/local/bin/entrypoint
 
-EXPOSE 8090 8091
+EXPOSE 8009 8090 8091
 
 USER ${SYSTEM_USER}
 

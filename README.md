@@ -12,16 +12,36 @@ This is a Docker-Image for Atlassian Confluence based on [Alpine Linux](http://a
 
 ## Variables
 
+* TOMCAT_CONTEXT_PATH
+
+Using with HTTP reverse proxy, not necessary with AJP:
+
 * TOMCAT_PROXY_NAME
 * TOMCAT_PROXY_PORT
 * TOMCAT_PROXY_SCHEME
-* TOMCAT_CONTEXT_PATH
+
+JVM memory management:
+
 * JVM_MEMORY_MIN
 * JVM_MEMORY_MAX
 
+Crowd:
+
+* CROWD_SSO: if set to 1, active ConfluenceCrowdSSOAuthenticator as authenticator
+
+Modifies following parameters in crowd.properties:
+
+* CROWD_APP_NAME (modifies application.name)
+* CROWD_APP_PASSWORD (modifies application.password)
+* CROWD_APP_LOGIN_URL (modifies application.login.url)
+* CROWD_SERVER_URL (modifies crowd.server.url)
+* CROWD_BASE_URL (modifies crowd.base.url)
+* CROWD_VALIDATIONINTERVAL (modifies session.validationinterval)
+
 ## Ports
-* 8090
-* 8091
+* 8009 (Confluence AJP)
+* 8090 (Confluence HTTP)
+* 8091 (Synchrony HTTP)
 
 ## Build container
 Specify the application version in the build command:
