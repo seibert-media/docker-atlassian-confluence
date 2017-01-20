@@ -27,7 +27,7 @@ JVM memory management:
 
 Crowd:
 
-* CROWD_SSO: if set to 1, active ConfluenceCrowdSSOAuthenticator as authenticator
+* CROWD_SSO: if set to something, activate ConfluenceCrowdSSOAuthenticator as authenticator
 
 Modifies following parameters in crowd.properties:
 

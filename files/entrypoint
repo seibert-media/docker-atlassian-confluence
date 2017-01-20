@@ -33,7 +33,7 @@ if [ "$(stat -c "%Y" "${CONFLUENCE_INST}/bin/setenv.sh")" -eq "0" ]; then
   fi
 fi
 
-if [ "${CROWD_SSO}" -eq "1" ]; then
+if [ -n "${CROWD_SSO}" ]; then
   xmlstarlet ed --inplace -u '//authenticator/@class' -v "com.atlassian.confluence.user.ConfluenceCrowdSSOAuthenticator" "${CONFLUENCE_INST}/confluence/WEB-INF/classes/seraph-config.xml"
 else
   xmlstarlet ed --inplace -u '//authenticator/@class' -v "com.atlassian.confluence.user.ConfluenceAuthenticator" "${CONFLUENCE_INST}/confluence/WEB-INF/classes/seraph-config.xml"
