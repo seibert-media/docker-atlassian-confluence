@@ -12,13 +12,13 @@ This is a Docker-Image for Atlassian Confluence based on [Alpine Linux](http://a
 
 ## Variables
 
-* TOMCAT_CONTEXT_PATH
+* TOMCAT_CONTEXT_PATH: default context path for confluence is "/"
 
 Using with HTTP reverse proxy, not necessary with AJP:
 
-* TOMCAT_PROXY_NAME
-* TOMCAT_PROXY_PORT
-* TOMCAT_PROXY_SCHEME
+* TOMCAT_PROXY_NAME: domain of confluence instance
+* TOMCAT_PROXY_PORT: e.g. 443
+* TOMCAT_PROXY_SCHEME: e.g. "https"
 
 JVM memory management:
 
