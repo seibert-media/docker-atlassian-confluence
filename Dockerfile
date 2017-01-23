@@ -11,6 +11,7 @@ ARG VERSION
 ARG MYSQL_JDBC_VERSION
 
 ENV CONFLUENCE_INST /opt/confluence
+ENV CONFLUENCE_HOME /var/opt/confluence
 ENV SYSTEM_USER confluence
 ENV SYSTEM_GROUP confluence
 ENV SYSTEM_HOME /home/confluence
@@ -35,12 +36,6 @@ RUN set -x \
   && rm /tmp/atlassian-confluence-${VERSION}.tar.gz \
   && chown -R ${SYSTEM_USER}:${SYSTEM_GROUP} ${CONFLUENCE_INST} \
   && chown -R ${SYSTEM_USER}:${SYSTEM_GROUP} ${CONFLUENCE_HOME}
-
-RUN set -x \
-  && wget -nv -O /tmp/mysql-connector-java-${MYSQL_JDBC_VERSION}.tar.gz https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQL_JDBC_VERSION}.tar.gz \
-  && tar xfz /tmp/mysql-connector-java-${MYSQL_JDBC_VERSION}.tar.gz -C /tmp \
-  && cp /tmp/mysql-connector-java-${MYSQL_JDBC_VERSION}/mysql-connector-java-${MYSQL_JDBC_VERSION}-bin.jar ${CONFLUENCE_INST}/confluence/WEB-INF/lib/ \
-  && rm /tmp/mysql-connector-java-${MYSQL_JDBC_VERSION}.tar.gz
 
 RUN set -x \
   && touch -d "@0" "${CONFLUENCE_INST}/conf/server.xml" \
