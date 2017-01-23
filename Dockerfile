@@ -10,8 +10,7 @@ MAINTAINER //SEIBERT/MEDIA GmbH <docker@seibert-media.net>
 ARG VERSION
 ARG MYSQL_JDBC_VERSION
 
-ENV CONFLUENCE_INST /opt/atlassian/confluence
-ENV CONFLUENCE_HOME /var/opt/atlassian/application-data/confluence
+ENV CONFLUENCE_INST /opt/confluence
 ENV SYSTEM_USER confluence
 ENV SYSTEM_GROUP confluence
 ENV SYSTEM_HOME /home/confluence
