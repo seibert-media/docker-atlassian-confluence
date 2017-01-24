@@ -8,7 +8,6 @@ FROM anapsix/alpine-java:8_server-jre
 MAINTAINER //SEIBERT/MEDIA GmbH <docker@seibert-media.net>
 
 ARG VERSION
-ARG MYSQL_JDBC_VERSION
 
 ENV CONFLUENCE_INST /opt/confluence
 ENV CONFLUENCE_HOME /var/opt/confluence
@@ -17,7 +16,7 @@ ENV SYSTEM_GROUP confluence
 ENV SYSTEM_HOME /home/confluence
 
 RUN set -x \
-  && apk add git tar xmlstarlet wget ca-certificates --update-cache --allow-untrusted --repository http://dl-cdn.alpinelinux.org/alpine/edge/main --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
+  && apk add su-exec tar xmlstarlet wget ca-certificates --update-cache --allow-untrusted --repository http://dl-cdn.alpinelinux.org/alpine/edge/main --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
   && rm -rf /var/cache/apk/*
 
 RUN set -x \
@@ -25,17 +24,16 @@ RUN set -x \
   && mkdir -p ${CONFLUENCE_HOME}
 
 RUN set -x \
-  && mkdir -p /home/${SYSTEM_USER} \
+  && mkdir -p ${SYSTEM_HOME} \
   && addgroup -S ${SYSTEM_GROUP} \
-  && adduser -S -D -G ${SYSTEM_GROUP} -h ${SYSTEM_GROUP} -s /bin/sh ${SYSTEM_USER} \
-  && chown -R ${SYSTEM_USER}:${SYSTEM_GROUP} /home/${SYSTEM_USER}
+  && adduser -S -D -G ${SYSTEM_GROUP} -h ${SYSTEM_HOME} -s /bin/sh ${SYSTEM_USER} \
+  && chown -R ${SYSTEM_USER}:${SYSTEM_GROUP} ${SYSTEM_HOME}
 
 RUN set -x \
   && wget -nv -O /tmp/atlassian-confluence-${VERSION}.tar.gz https://www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-${VERSION}.tar.gz \
   && tar xfz /tmp/atlassian-confluence-${VERSION}.tar.gz --strip-components=1 -C ${CONFLUENCE_INST} \
   && rm /tmp/atlassian-confluence-${VERSION}.tar.gz \
-  && chown -R ${SYSTEM_USER}:${SYSTEM_GROUP} ${CONFLUENCE_INST} \
-  && chown -R ${SYSTEM_USER}:${SYSTEM_GROUP} ${CONFLUENCE_HOME}
+  && chown -R ${SYSTEM_USER}:${SYSTEM_GROUP} ${CONFLUENCE_INST}
 
 RUN set -x \
   && touch -d "@0" "${CONFLUENCE_INST}/conf/server.xml" \
@@ -45,13 +43,7 @@ RUN set -x \
 ADD files/service /usr/local/bin/service
 ADD files/entrypoint /usr/local/bin/entrypoint
 
-RUN set -x \
-  && chown -R ${SYSTEM_USER}:${SYSTEM_GROUP} /usr/local/bin/service \
-  && chown -R ${SYSTEM_USER}:${SYSTEM_GROUP} /usr/local/bin/entrypoint
-
 EXPOSE 8009 8090 8091
-
-USER ${SYSTEM_USER}
 
 VOLUME ${CONFLUENCE_HOME}
 
