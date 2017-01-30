@@ -10,7 +10,7 @@ build: checkvars
 
 clean: checkvars
 	docker rmi $(REGISTRY)/seibertmedia/atlassian-confluence:$(VERSION)
-	
+
 upload: checkvars
 	docker push $(REGISTRY)/seibertmedia/atlassian-confluence:$(VERSION)
 
