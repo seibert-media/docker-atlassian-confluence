@@ -7,8 +7,10 @@ all: build upload clean
 
 build: checkvars
 	docker build --no-cache --rm=true --build-arg VERSION=$(ATLASSIAN_VERSION) -t $(REGISTRY)/seibertmedia/atlassian-confluence:$(VERSION) .
+
 clean: checkvars
 	docker rmi $(REGISTRY)/seibertmedia/atlassian-confluence:$(VERSION)
+	
 upload: checkvars
 	docker push $(REGISTRY)/seibertmedia/atlassian-confluence:$(VERSION)
 
