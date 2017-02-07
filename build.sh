@@ -1,6 +1,11 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-set -e
+set -o errexit
+set -o nounset
+set -o pipefail
+set -o errtrace
+
+ATLASSIAN_VERSION=${ATLASSIAN_VERSION:-""}
 
 if [ -n "${ATLASSIAN_VERSION}" ]; then
     atlassian_version=${ATLASSIAN_VERSION}
